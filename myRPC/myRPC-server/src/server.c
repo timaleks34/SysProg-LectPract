@@ -55,17 +55,6 @@ void execute_command(const char *command, char *stdout_file, char *stderr_file) 
 }
 
 int main() {
-	pid_t pid = fork();
-	if (pid < 0) exit(EXIT_FAILURE);
-	if (pid > 0) exit(EXIT_SUCCESS);
-
-	umask(0);
-	if (setsid() < 0) exit(EXIT_FAILURE);
-
-	chdir("/");
-	close(STDIN_FILENO);
-	close(STDOUT_FILENO);
-	close(STDERR_FILENO);
     signal(SIGINT, handle_signal);
     signal(SIGTERM, handle_signal);
 
