@@ -19,6 +19,19 @@ void handle_signal(int signal) {
     stop_flag = 1;
 }
 
+void run_daemon() {
+    pid_t pid = fork();
+    if (pid < 0) exit(EXIT_FAILURE);
+    if (pid > 0) exit(EXIT_SUCCESS);
+
+    setsid();
+    umask(0);
+
+    close(STDIN_FILENO);
+    close(STDOUT_FILENO);
+    close(STDERR_FILENO);
+}
+
 // Проверка разрешенных пользователей
 int is_user_allowed(const char *username) {
     FILE *config_file = fopen("/etc/myRPC/users.conf", "r");
@@ -56,6 +69,8 @@ void execute_command(const char *command, char *stdout_path, char *stderr_path) 
 }
 
 int main() {
+    run_daemon();
+    
     signal(SIGINT, handle_signal);
     signal(SIGTERM, handle_signal);
 
